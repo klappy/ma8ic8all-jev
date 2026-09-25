@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ma8ic 8all — shake (mockup)</title>
+<style>
+:root{--ink:#0b0b14;--ink2:#151526;--line:#2a2a40;--text:#ecebf5;--muted:#9a98b3;--yes:#3ecf8e;--hazy:#b9b4d6;--no:#ef6a5a;--accent:#ffd166;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b1b33,var(--ink) 60%);color:var(--text);font:16px/24px ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
+.mock{background:#3a2f00;color:var(--accent);font-size:12px;text-align:center;padding:4px}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;max-width:720px;margin:auto}
+header b{font-size:18px}nav a{color:var(--muted);text-decoration:none;margin-left:14px;font-size:14px}nav a.on{color:var(--text)}nav a.off{opacity:.45;pointer-events:none}
+main{max-width:520px;margin:auto;padding:8px 16px 48px;text-align:center}
+h1{font-size:28px;line-height:32px;margin:8px 0 4px}.sub{color:var(--muted);margin:0 0 16px}
+.stage{position:relative;height:300px;display:grid;place-items:center}
+.ball{width:270px;height:270px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#555 0,#1a1a1a 22%,#000 60%);box-shadow:0 30px 60px #0008,inset -20px -30px 60px #000;display:grid;place-items:center;cursor:pointer;border:0}
+.win{width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,#10103a,#05050f 70%);box-shadow:inset 0 0 18px #000;display:grid;place-items:center;overflow:hidden;position:relative}
+.eight{font:bold 64px/1 ui-sans-serif,system-ui;color:#111;background:#f4f4f4;width:100px;height:100px;border-radius:50%;display:grid;place-items:center}
+.die{width:120px;height:104px;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(#2b2fd0,#1a1c8a);display:flex;align-items:flex-start;justify-content:center;padding:12px 18px 0;font-size:11px;line-height:13px;color:#fff;opacity:0;transform:scale(.6) rotate(-12deg);filter:blur(4px);transition:all .45s ease-out}
+.die.up{opacity:1;transform:none;filter:none}
+.die span{max-width:70px}
+.shaking{animation:shake .9s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translateX(-3px) rotate(-1deg)}20%,80%{transform:translateX(6px) rotate(2deg)}30%,50%,70%{transform:translateX(-12px) rotate(-3deg)}40%,60%{transform:translateX(12px) rotate(3deg)}}
+@media (prefers-reduced-motion:reduce){.shaking{animation:none}.die{transition:opacity .2s;transform:none;filter:none}}
+form{display:grid;gap:8px;margin-top:8px;text-align:left}
+input,textarea{width:100%;background:var(--ink2);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;font:inherit}
+textarea{min-height:70px}details summary{color:var(--muted);font-size:14px;cursor:pointer}
+button.primary{background:var(--accent);color:#1a1400;border:0;border-radius:12px;padding:12px;font-weight:700;font-size:16px;cursor:pointer}
+.phrase{margin:14px 0 2px;font-size:20px;line-height:26px;min-height:26px}
+.band{display:inline-block;font:12px var(--mono);padding:2px 8px;border-radius:999px;border:1px solid}
+.why{background:none;border:0;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer;margin-top:6px}
+.reveal{text-align:left;background:var(--ink2);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px;display:none}
+.reveal.open{display:block;animation:up .24s ease-out}@keyframes up{from{transform:translateY(12px);opacity:0}}
+.bar{position:relative;height:14px;border-radius:7px;background:linear-gradient(90deg,var(--no) 0 35%,var(--hazy) 35% 80%,var(--yes) 80%);opacity:.9;margin:22px 0 6px}
+.tie{position:absolute;top:-3px;bottom:-3px;width:10%;background:repeating-linear-gradient(45deg,#fff3 0 3px,transparent 3px 6px)}
+.mark{position:absolute;top:-18px;transform:translateX(-50%);font:12px var(--mono)}
+.mark:after{content:"";display:block;width:2px;height:22px;background:#fff;margin:2px auto 0}
+.scale{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--muted)}
+.steps{margin:14px 0 6px;padding:0;list-style:none;font-size:14px}.steps li{padding:6px 0;border-top:1px solid var(--line)}
+code,.mono{font-family:var(--mono);font-size:13px}.muted{color:var(--muted)}
+.help{background:#b9b4d61a;border:1px dashed var(--hazy);border-radius:10px;padding:8px 10px;font-size:14px;margin-top:8px}
+.footer{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:13px}
+.footer .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.footer .acts span{border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.sheet{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:5}.sheet.open{display:flex}
+.sheet div.card{background:var(--ink2);border:1px solid var(--line);border-radius:20px 20px 0 0;max-width:520px;width:100%;padding:20px;text-align:left}
+.sheet ol{padding-left:20px;font-size:14px}
+.sound{position:fixed;right:14px;bottom:14px;background:var(--ink2);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:8px 12px;cursor:pointer}
+.demo{margin:28px auto 0;max-width:520px;border:1px dashed var(--line);border-radius:12px;padding:10px;font-size:13px;color:var(--muted);text-align:left}
+.demo button{background:var(--ink2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:4px 8px;margin:2px;cursor:pointer}
+a{color:var(--accent)}
+</style></head><body>
+<div class="mock">MOCKUP · slice 1 design · all numbers and ids are mock data, not measurements</div>
+<header><b>🎱 Ma8ic 8all</b><nav><a class="on" href="shake.html">Shake</a><a href="ask.html">Ask</a><a href="receipts.html">Receipts</a><a class="off" title="later, not built">Usage &amp; plan</a></nav></header>
+<main>
+<h1>Ask the ball. Get a real answer.</h1>
+<p class="sub">The phrase is a joke. The probability is not.</p>
+<div class="stage"><button class="ball" id="ball" aria-label="Shake the ball"><div class="win"><div class="eight" id="eight">8</div><div class="die" id="die" style="position:absolute"><span id="dieText"></span></div></div></button></div>
+<form id="f" onsubmit="event.preventDefault();go()">
+<input id="q" value="Should I ship the patch today?" aria-label="Your question">
+<details><summary>Add context (the ball only judges what you tell it)</summary><textarea id="ctx">CI green on the head sha; captain approved; no open blockers.</textarea></details>
+<button class="primary" type="submit">Shake</button>
+</form>
+<div id="out" hidden>
+<div class="phrase" id="phrase"></div>
+<span class="band" id="bandChip"></span><br>
+<button class="why" onclick="document.getElementById('rev').classList.toggle('open')">why? (probability · contract · receipt)</button>
+<div class="reveal" id="rev">
+<div class="bar"><div class="tie" style="left:30%"></div><div class="tie" style="left:75%"></div><div class="mark" id="mark"></div></div>
+<div class="scale"><span>0</span><span>0.35</span><span>0.80</span><span>1</span></div>
+<p id="readout" style="margin:10px 0 0"></p>
+<ol class="steps">
+<li>1 · <b>Routed</b> to <code id="ctr"></code> <span class="muted">routing confidence <span class="mono" id="rc"></span></span></li>
+<li>2 · <b>Answered</b> one <code>noul</code>: <span class="mono" id="pp"></span></li>
+<li class="muted">latency <span class="mono" id="lat"></span> · jev <span class="mono" id="jms"></span> · bands from the contract, not code</li>
+</ol>
+<div class="help" id="help" hidden></div>
+<p class="muted" style="font-size:13px;margin:8px 0 0">Advice, not a gate. You own the call.</p>
+<div class="footer"><span class="mono" id="rid"></span> · kept: your question and context <b>after filtering</b> (<span id="red"></span>)
+<div class="acts"><span>✓ Keep (pay with data)</span><span>↺ Swap for feedback</span><span>✕ Expunge</span><span>$ Pay: nothing kept</span></div>
+<div class="muted" style="margin-top:6px">Silence keeps the filtered record. <a href="#">Terms</a> · <a href="receipts.html">Open receipt</a> · <a href="ask.html">Ask this properly →</a></div></div>
+</div></div>
+<div class="demo"><b>Mockup states</b> (for review, not product UI):<br>
+<button onclick="setMode('yes')">yes</button><button onclick="setMode('hazy')">hazy (routing unsure)</button><button onclick="setMode('no')">no</button><button onclick="setMode('tie')">near-tie</button><button onclick="setMode('err')">error</button><button onclick="consent()">first-call consent</button>
+<div id="modeLbl">next shake: yes</div></div>
+</main>
+<button class="sound" id="snd" onclick="toggleSound()" aria-pressed="false">🔇 sound off</button>
+<div class="sheet" id="sheet"><div class="card">
+<h3 style="margin:0 0 6px">Before your first shake</h3>
+<p style="font-size:14px;margin:0">Free shakes are paid for with your request data. We filter it first: secrets, personal info and security details are cut before anything is stored, and your receipt shows the counts. You can change this on any receipt:</p>
+<ol><li><b>Pay with data</b> (default): the filtered request is kept to improve the ball.</li><li><b>Pay with feedback</b>: swap the record for feedback on what you were trying to do.</li><li><b>Pay with money</b>: nothing is kept.</li></ol>
+<p class="muted" style="font-size:12px">Placeholder wording: terms await the captain's and a lawyer's read.</p>
+<button class="primary" style="width:100%" onclick="document.getElementById('sheet').classList.remove('open');seen=true;go()">I understand, shake</button>
+<p style="text-align:center;font-size:13px"><a href="#">Read the terms</a></p></div></div>
+<script>
+const M={yes:{p:.87,rc:.91,ctr:'magic8@1',band:'yes',ph:'Every bubble in here points to yes.',red:'0 sentences redacted'},
+hazy:{p:.52,rc:.41,ctr:'generic@1',band:'hazy',ph:'The ball wants more context before it commits.',red:'1 sentence redacted: 1 Jev at 0.34',help:'Routing was unsure (0.41, below the band). It would help to say what "ready" means for you and what is still open.'},
+no:{p:.18,rc:.88,ctr:'magic8@1',band:'no',ph:'Odds are against this one.',red:'2 sentences redacted: 2 pattern'},
+tie:{p:.79,rc:.86,ctr:'magic8@1',band:'hazy',ph:'Half a yes is not a yes. Look again.',red:'0 sentences redacted',help:'p = 0.79 is within 0.05 of the 0.80 line. Reruns move about ±0.05, so treat this as a tie.'}};
+let mode='yes',seen=false,sound=false,ac;
+function setMode(m){mode=m;document.getElementById('modeLbl').textContent='next shake: '+m}
+function consent(){seen=false;document.getElementById('sheet').classList.add('open')}
+function toggleSound(){sound=!sound;const b=document.getElementById('snd');b.textContent=sound?'🔊 sound on':'🔇 sound off';b.setAttribute('aria-pressed',sound)}
+function slosh(){if(!sound)return;ac=ac||new AudioContext();const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.setValueAtTime(140,ac.currentTime);o.frequency.exponentialRampToValueAtTime(60,ac.currentTime+.5);g.gain.setValueAtTime(.12,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.6);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+.6)}
+document.getElementById('ball').onclick=()=>go();
+function go(){if(!seen){consent();return}
+const ball=document.getElementById('ball'),die=document.getElementById('die'),eight=document.getElementById('eight'),out=document.getElementById('out');
+out.hidden=true;die.classList.remove('up');eight.style.display='grid';document.getElementById('rev').classList.remove('open');
+ball.classList.remove('shaking');void ball.offsetWidth;ball.classList.add('shaking');slosh();
+setTimeout(()=>{ball.classList.remove('shaking');eight.style.display='none';
+if(mode==='err'){document.getElementById('dieText').textContent='The ball clouded over.';die.classList.add('up');out.hidden=false;
+document.getElementById('phrase').textContent='The call failed. No answer was made up.';document.getElementById('bandChip').textContent='error';document.getElementById('bandChip').style.color='var(--muted)';document.querySelector('.why').hidden=true;return}
+document.querySelector('.why').hidden=false;
+const d=M[mode],c={yes:'var(--yes)',hazy:'var(--hazy)',no:'var(--no)'}[d.band];
+document.getElementById('dieText').textContent=d.ph;die.classList.add('up');
+document.getElementById('phrase').textContent=d.ph;const bc=document.getElementById('bandChip');bc.textContent=d.band+' band';bc.style.color=c;bc.style.borderColor=c;
+const mk=document.getElementById('mark');mk.style.left=(d.p*100)+'%';mk.textContent='p '+d.p.toFixed(2);
+document.getElementById('readout').innerHTML='p = <b class="mono">'+d.p.toFixed(2)+'</b>, <span style="color:'+c+'">'+d.band+'</span> band. '+{yes:'Act on it, still your call.',hazy:'Gather more evidence or ask the captain.',no:'Do not act on it as asked.'}[d.band];
+document.getElementById('ctr').textContent=d.ctr;document.getElementById('rc').textContent=d.rc.toFixed(2);document.getElementById('pp').textContent='p '+d.p.toFixed(2);
+document.getElementById('lat').textContent=(420+Math.round(Math.random()*200))+' ms';document.getElementById('jms').textContent=(270+Math.round(Math.random()*40))+' ms';
+document.getElementById('rid').textContent='rcpt_'+Math.random().toString(36).slice(2,10);document.getElementById('red').textContent=d.red;
+const h=document.getElementById('help');h.hidden=!d.help;h.textContent=d.help||'';out.hidden=false},900)}
+</script></body></html>

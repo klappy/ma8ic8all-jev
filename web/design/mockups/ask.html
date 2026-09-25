@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ma8ic 8all — ask builder (mockup)</title>
+<style>
+:root{--ink:#0b0b14;--ink2:#151526;--line:#2a2a40;--text:#ecebf5;--muted:#9a98b3;--yes:#3ecf8e;--hazy:#b9b4d6;--no:#ef6a5a;--accent:#ffd166;--die:#2b2fd0;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--text);font:15px/22px ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.mock{background:#3a2f00;color:var(--accent);font-size:12px;text-align:center;padding:4px}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;max-width:1100px;margin:auto}
+header b{font-size:18px}nav a{color:var(--muted);text-decoration:none;margin-left:14px;font-size:14px}nav a.on{color:var(--text)}nav a.off{opacity:.45;pointer-events:none}
+main{max-width:1100px;margin:auto;padding:0 16px 48px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){main{grid-template-columns:1fr}}
+section{background:var(--ink2);border:1px solid var(--line);border-radius:16px;padding:16px}
+h2{font-size:16px;margin:0 0 10px}label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input,textarea,select{width:100%;background:var(--ink);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px;font:inherit}
+textarea{min-height:64px}.mono,code{font-family:var(--mono);font-size:12.5px}.muted{color:var(--muted)}
+.pick{display:flex;gap:6px;flex-wrap:wrap}.pick button{background:var(--ink);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:5px 12px;cursor:pointer;font:13px var(--mono)}.pick button.on{border-color:var(--accent);color:var(--accent)}
+.byo{display:none;margin-top:8px}.byo.on{display:block}
+.q{border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px;background:var(--ink)}
+.q .row{display:grid;grid-template-columns:1fr 110px;gap:8px}
+.lint{font-size:12px;color:var(--accent);margin-top:4px}
+.add{background:none;border:1px dashed var(--line);color:var(--muted);border-radius:12px;width:100%;padding:8px;margin-top:10px;cursor:pointer}
+button.primary{background:var(--accent);color:#1a1400;border:0;border-radius:12px;padding:12px;font-weight:700;width:100%;margin-top:14px;cursor:pointer;font-size:15px}
+button.primary:disabled{opacity:.4;cursor:not-allowed}
+.head{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:6px}
+.card{border-top:1px solid var(--line);padding:12px 0}
+.tb{font:11px var(--mono);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-left:6px;color:var(--muted)}
+.dist{display:grid;grid-template-columns:120px 1fr 44px;gap:6px;align-items:center;font-size:13px;margin-top:4px}
+.dist .t{height:10px;border-radius:5px;background:var(--line);overflow:hidden}.dist .f{height:100%;background:var(--die)}.dist.top .f{background:var(--accent)}.dist.top{font-weight:700}
+.bb{position:relative;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--no) 0 35%,var(--hazy) 35% 80%,var(--yes) 80%);margin:18px 0 4px}
+.bb i{position:absolute;top:-16px;transform:translateX(-50%);font:11px var(--mono);font-style:normal}.bb i:after{content:"";display:block;width:2px;height:18px;background:#fff;margin:1px auto 0}
+.chip{font:11px var(--mono);border:1px solid;border-radius:999px;padding:1px 8px;margin-left:6px}
+.ph{font-style:italic;color:var(--muted);font-size:13px;margin-top:4px;display:none}.showph .ph{display:block}
+.tabs{display:flex;gap:6px;margin-top:10px}.tabs button{background:var(--ink);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:13px}
+pre{background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;overflow:auto;font:12px/17px var(--mono);max-height:260px}
+.docs{grid-column:1/-1}.docs details{border-top:1px solid var(--line);padding:8px 0}.docs summary{cursor:pointer}
+.footer{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;font-size:12.5px}
+.footer .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.footer .acts span{border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.prev{opacity:.55;font-size:12px}
+a{color:var(--accent)}
+</style></head><body>
+<div class="mock">MOCKUP · slice 1 design · all numbers, ids and hashes are mock data, not measurements</div>
+<header><b>🎱 Ma8ic 8all · Ask</b><nav><a href="shake.html">Shake</a><a class="on" href="ask.html">Ask</a><a href="receipts.html">Receipts</a><a class="off" title="later, not built">Usage &amp; plan</a></nav></header>
+<main>
+<section>
+<h2>1 · Contract</h2>
+<div class="pick" id="pick"><button data-c="magic8@1" class="on">magic8@1</button><button data-c="byo">+ bring your own</button><button data-c="none">none</button></div>
+<div class="byo" id="byo"><div style="display:grid;grid-template-columns:1fr 80px;gap:8px"><div><label>name</label><input value="offload-check" class="mono"></div><div><label>version</label><input value="2" class="mono" id="ver"></div></div>
+<label>body (markdown: what state must hold, criteria, bands, escape hatch, examples)</label><textarea class="mono" id="body" oninput="document.getElementById('bump').hidden=false">## Criteria
+- true: The candidate states a rule that governs what the seat should do here.
+- false: The candidate is related but does not govern this situation.
+## Escape hatch
+If state lacks the situation, answer in the hazy band.</textarea>
+<div class="lint" id="bump" hidden>Text changed since v2 was used. Bump the version? <a href="#" onclick="ver.value=+ver.value+1;bump.hidden=true;return false">bump to next</a></div>
+<div class="muted mono" style="margin-top:4px">sha256 → receipt: 9f3c…a71e</div></div>
+<div class="lint" id="nocon" hidden>ask needs a contract as name@version. See docs · How to write a contract. (Same refusal the backend returns.)</div>
+<h2 style="margin-top:16px">2 · State</h2>
+<textarea id="state">Seat is about to answer a question about moving a rail unit from 2-cooking to 3-pass. The unit has a VERDICT.md and a named hold on deploy path. Candidates: [1] HYGIENE 23 foldouts, [2] rail move rules, [3] ASK.md seeding rule.</textarea>
+<div class="muted" style="font-size:12px">Everything Jev may judge. It looks nothing up.</div>
+<h2 style="margin-top:16px">3 · Questions <span class="muted" style="font-weight:400">(batched: one call)</span></h2>
+<div id="qs"></div>
+<button class="add" onclick="addQ()">+ add question</button>
+<label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" style="width:auto" onchange="document.getElementById('res').classList.toggle('showph',this.checked)"> add the ball phrase per answer (<code>phrase: true</code>)</label>
+<button class="primary" id="go" onclick="run()">Ask</button>
+</section>
+<section id="res">
+<h2>Results</h2>
+<div id="empty" class="muted">Run a batch to see every answer with its full distribution.</div>
+<div id="results" hidden>
+<div class="head"><span>contract <code id="rc"></code></span><span>sha <code>9f3c…a71e</code></span><span>latency <code>612 ms</code></span><span>jev <code>291 ms</code></span><span>tokens <code>1,204 in / 88 out</code></span><span>receipt <code>rcpt_7h2k9q1x</code></span></div>
+<div id="cards"></div>
+<div class="tabs"><button onclick="show('mcp')">Copy as MCP call</button><button onclick="show('json')">Copy as JSON answer</button></div>
+<pre id="code" hidden></pre>
+<div class="footer"><code>rcpt_7h2k9q1x</code> · kept: state and questions <b>after filtering</b> (0 sentences redacted)
+<div class="acts"><span>✓ Keep (pay with data)</span><span>↺ Swap for feedback</span><span>✕ Expunge</span><span>$ Pay: nothing kept</span></div>
+<div class="muted" style="margin-top:6px">Silence keeps the filtered record. <a href="#">Terms</a> · <a href="receipts.html">Open receipt</a></div></div>
+<div class="prev" style="margin-top:12px">Previous run (v1, 14:02): rail-move top 0.71 · re-runs sit beside new ones so versions can be compared.</div>
+</div>
+</section>
+<section class="docs"><h2>Docs (the product is Jev plus the guides)</h2>
+<p class="muted" style="margin:0 0 6px">We're deploying Jev across our entire ontology, one proven decision at a time — opt-in until the experiments say it's better. Here's how to do the same.</p>
+<details><summary>The bands</summary><p>From the contract, not code. <code>magic8@1</code>: p ≥ 0.80 yes · 0.35–0.80 hazy · &lt; 0.35 no.</p></details>
+<details><summary>How to write a contract</summary><p>What state must hold, criteria as full sentences, bands, an escape hatch, worked examples. Change the text → bump the version.</p></details>
+<details><summary>Batching</summary><p>Put every candidate for one situation in one call. Model time was about flat from 1 to 14 questions (speed receipt; one run, a signal not a verdict).</p></details>
+<details><summary>What is not proven yet</summary><p>Whether Jev's advice improves an LLM's own answers is open (registry C29).</p></details>
+</section>
+</main>
+<script>
+const qs=[{n:'governs_1',t:'noul',c:'Candidate [1] states a rule that governs what the seat should do here.',p:.22},
+{n:'governs_2',t:'noul',c:'Candidate [2] states a rule that governs what the seat should do here.',p:.84},
+{n:'governs_3',t:'noul',c:'Candidate [3] states a rule that governs what the seat should do here.',p:.58},
+{n:'best_source',t:'choice',c:'Which candidate should the seat read first to act correctly here?',o:['[1] foldouts','[2] rail move','[3] ASK seeding','none (reply hazy)'],d:[.06,.71,.17,.06]}];
+const PH={yes:'Green light from the depths of the ball.',hazy:'Shake again after you learn something new.',no:'Not with what you have told it.'};
+function band(p){return p>=.8?'yes':p>=.35?'hazy':'no'}const col={yes:'var(--yes)',hazy:'var(--hazy)',no:'var(--no)'};
+function renderQ(){const el=document.getElementById('qs');el.innerHTML='';qs.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
+d.innerHTML=`<div class="row"><input class="mono" value="${q.n}"><select onchange="qs[${i}].t=this.value;renderQ()">${['noul','score','choice'].map(t=>`<option ${t==q.t?'selected':''}>${t}</option>`).join('')}</select></div>
+<label>criteria (full sentences)</label><textarea oninput="qs[${i}].c=this.value;lint(${i},this)">${q.c}</textarea><div class="lint" id="l${i}"></div>`+
+(q.t=='choice'?`<label>options</label><input value="${(q.o||['a','b']).join(' | ')}"><div class="muted" style="font-size:12px">escape option included: "none (reply hazy)"</div>`:'');el.appendChild(d)});
+document.getElementById('go').textContent=`Ask ${qs.length} question${qs.length>1?'s':''} in 1 call`}
+function lint(i,t){const w=t.value.trim().split(/\s+/).length;document.getElementById('l'+i).textContent=!t.value.trim()?'No criteria: the backend will refuse this question.':w<5?'Criteria read like a keyword. Write a full sentence.':''}
+function addQ(){qs.push({n:'q'+(qs.length+1),t:'score',c:'',p:.5});renderQ()}
+document.querySelectorAll('#pick button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#pick button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+document.getElementById('byo').classList.toggle('on',b.dataset.c=='byo');const none=b.dataset.c=='none';document.getElementById('nocon').hidden=!none;document.getElementById('go').disabled=none;
+document.getElementById('rc').textContent=b.dataset.c=='byo'?'offload-check@2':'magic8@1'});
+function run(){document.getElementById('empty').hidden=true;document.getElementById('results').hidden=false;if(!document.getElementById('rc').textContent)document.getElementById('rc').textContent='magic8@1';
+const c=document.getElementById('cards');c.innerHTML='';qs.forEach(q=>{const k=document.createElement('div');k.className='card';
+if(q.t=='choice'){const mx=Math.max(...q.d);const top=q.o[q.d.indexOf(mx)];k.innerHTML=`<b>${q.n}</b><span class="tb">choice</span> <span class="muted">top: ${top}</span>`+q.o.map((o,j)=>`<div class="dist ${q.d[j]==mx?'top':''}"><span>${o}</span><div class="t"><div class="f" style="width:${q.d[j]*100}%"></div></div><span class="mono">${q.d[j].toFixed(2)}</span></div>`).join('')+`<div class="ph">“${PH[band(mx)]}”</div>`}
+else{const b=band(q.p);const tie=Math.abs(q.p-.8)<=.05||Math.abs(q.p-.35)<=.05;k.innerHTML=`<b>${q.n}</b><span class="tb">${q.t}</span><span class="chip" style="color:${col[b]}">${b}${tie?' · near tie':''}</span><div class="bb"><i style="left:${q.p*100}%">${q.p.toFixed(2)}</i></div><div class="muted" style="font-size:12px">${q.c}</div><div class="ph">“${PH[b]}”</div>`}
+c.appendChild(k)})}
+function show(w){const p=document.getElementById('code');p.hidden=false;const qo={};qs.forEach(q=>{qo[q.n]={type:q.t,criteria:q.c,...(q.o?{options:q.o}:{})}});
+p.textContent=w=='mcp'?JSON.stringify({method:'tools/call',params:{name:'ask',arguments:{contract:document.getElementById('rc').textContent,state:document.getElementById('state').value,questions:qo,phrase:false}}},null,2)
+:JSON.stringify({answers:Object.fromEntries(qs.map(q=>[q.n,q.t=='choice'?{distribution:Object.fromEntries(q.o.map((o,j)=>[o,q.d[j]]))}:{p:q.p,band:band(q.p)}])),contract:document.getElementById('rc').textContent,contract_sha256:'9f3c…a71e',latency_ms:612,jev_ms:291,receipt:'rcpt_7h2k9q1x',advice_not_gate:true,_note:'mock data'},null,2)}
+renderQ();
+</script></body></html>
