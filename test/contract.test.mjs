@@ -1,0 +1,11 @@
+import { readFileSync } from "node:fs";
+import assert from "node:assert";
+const src = readFileSync(new URL("../src/index.js", import.meta.url), "utf8");
+const fn = src.slice(src.indexOf("export function parseContract"), src.indexOf("const C_MAGIC8"));
+const parseContract = new Function(fn.replace("export ", "") + "; return parseContract;")();
+const c = parseContract(readFileSync(new URL("../contracts/CONTRACT-magic8@1.md", import.meta.url), "utf8"));
+assert.equal(c.name, "magic8"); assert.equal(c.version, "1");
+assert.deepEqual(c.bands.map((b) => [b.band, b.min, b.max]), [["yes", 0.8, 1], ["hazy", 0.35, 0.8], ["no", 0, 0.35]]);
+assert.equal(c.phrases.yes.length, 10); assert.equal(c.phrases.hazy.length, 5); assert.equal(c.phrases.no.length, 5);
+assert.ok(c.criteria.true && c.criteria.false);
+console.log("contract magic8@1 ok");

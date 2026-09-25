@@ -1,0 +1,13 @@
+name = "ma8ic-8all"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+preview_urls = true
+
+rules = [{ type = "Text", globs = ["**/*.md"], fallthrough = true }]
+
+[ai]
+binding = "AI"
+
+# Secret (set by captain, never committed): MA8IC_TOKEN (bearer, same pattern as sibling servers)
+# Optional D1 for telemetry: add [[d1_databases]] binding = "DB" after `schema.sql` is applied.
