@@ -5,13 +5,13 @@
 :root{--ink:#0b0b14;--ink2:#151526;--line:#2a2a40;--text:#ecebf5;--muted:#9a98b3;--yes:#3ecf8e;--hazy:#b9b4d6;--no:#ef6a5a;--accent:#ffd166;--die:#2b2fd0;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
 *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--text);font:15px/22px ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .mock{background:#3a2f00;color:var(--accent);font-size:12px;text-align:center;padding:4px}
-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;max-width:1100px;margin:auto}
-header b{font-size:18px}nav a{color:var(--muted);text-decoration:none;margin-left:14px;font-size:14px}nav a.on{color:var(--text)}nav a.off{opacity:.45;pointer-events:none}
+header{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between;padding:12px 16px;max-width:1100px;margin:auto}
+header b{font-size:18px}nav{display:flex;flex-wrap:wrap;gap:4px 14px}nav a{color:var(--muted);text-decoration:none;font-size:14px;white-space:nowrap}nav a.on{color:var(--text)}nav a.off{opacity:.45;pointer-events:none}
 main{max-width:1100px;margin:auto;padding:0 16px 48px}
 .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
 .kpi{background:var(--ink2);border:1px solid var(--line);border-radius:14px;padding:12px}.kpi b{display:block;font:22px var(--mono)}.kpi span{font-size:12px;color:var(--muted)}
 .mix{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-top:8px}
-.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px}@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}.tw{overflow-x:auto}
 section{background:var(--ink2);border:1px solid var(--line);border-radius:16px;padding:14px}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 input,select,textarea{background:var(--ink);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px;font:inherit}
@@ -20,7 +20,7 @@ td{padding:8px 4px;border-bottom:1px solid var(--line);font-family:var(--mono);f
 .chip{border:1px solid;border-radius:999px;padding:0 7px;font-size:11px}
 .ret{font-size:11px;border-radius:6px;padding:1px 6px;background:var(--ink)}
 .tomb td{color:var(--muted);text-decoration:line-through}
-dl{display:grid;grid-template-columns:140px 1fr;gap:4px 10px;font-size:13px;margin:8px 0}dt{color:var(--muted)}dd{margin:0;font-family:var(--mono);font-size:12.5px}
+dl{display:grid;grid-template-columns:minmax(0,120px) minmax(0,1fr);gap:4px 10px;font-size:13px;margin:8px 0}dt{color:var(--muted)}dd{margin:0;font-family:var(--mono);font-size:12.5px}
 .acts{display:grid;gap:8px;margin-top:10px}
 .act{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--ink)}.act.on{border-color:var(--accent)}
 .act h4{margin:0 0 4px;font-size:14px}.act p{margin:0;font-size:13px;color:var(--muted)}
@@ -45,7 +45,7 @@ a{color:var(--accent)}.muted{color:var(--muted)}
 <div class="grid">
 <section>
 <div class="filters"><input placeholder="receipt id, e.g. rcpt_7h2k…" style="flex:1;min-width:160px" class="mono"><select><option>all tools</option><option>shake</option><option>ask</option></select><select><option>all bands</option><option>yes</option><option>hazy</option><option>no</option></select><select><option>all retention</option><option>data</option><option>feedback</option><option>paid</option><option>expunged</option></select></div>
-<table><thead><tr><th>receipt</th><th>tool</th><th>contract</th><th>result</th><th>ms</th><th>kept</th></tr></thead><tbody id="tb"></tbody></table>
+<div class="tw"><table><thead><tr><th>receipt</th><th>tool</th><th>contract</th><th>result</th><th>ms</th><th>kept</th></tr></thead><tbody id="tb"></tbody></table></div>
 </section>
 <section id="det"></section>
 </div>

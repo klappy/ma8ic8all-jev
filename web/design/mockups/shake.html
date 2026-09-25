@@ -5,8 +5,8 @@
 :root{--ink:#0b0b14;--ink2:#151526;--line:#2a2a40;--text:#ecebf5;--muted:#9a98b3;--yes:#3ecf8e;--hazy:#b9b4d6;--no:#ef6a5a;--accent:#ffd166;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b1b33,var(--ink) 60%);color:var(--text);font:16px/24px ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh}
 .mock{background:#3a2f00;color:var(--accent);font-size:12px;text-align:center;padding:4px}
-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;max-width:720px;margin:auto}
-header b{font-size:18px}nav a{color:var(--muted);text-decoration:none;margin-left:14px;font-size:14px}nav a.on{color:var(--text)}nav a.off{opacity:.45;pointer-events:none}
+header{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between;padding:12px 16px;max-width:720px;margin:auto}
+header b{font-size:18px}nav{display:flex;flex-wrap:wrap;gap:4px 14px}nav a{color:var(--muted);text-decoration:none;font-size:14px;white-space:nowrap}nav a.on{color:var(--text)}nav a.off{opacity:.45;pointer-events:none}
 main{max-width:520px;margin:auto;padding:8px 16px 48px;text-align:center}
 h1{font-size:28px;line-height:32px;margin:8px 0 4px}.sub{color:var(--muted);margin:0 0 16px}
 .stage{position:relative;height:300px;display:grid;place-items:center}
@@ -32,7 +32,7 @@ button.primary{background:var(--accent);color:#1a1400;border:0;border-radius:12p
 .tie{position:absolute;top:-3px;bottom:-3px;width:10%;background:repeating-linear-gradient(45deg,#fff3 0 3px,transparent 3px 6px)}
 .mark{position:absolute;top:-18px;transform:translateX(-50%);font:12px var(--mono)}
 .mark:after{content:"";display:block;width:2px;height:22px;background:#fff;margin:2px auto 0}
-.scale{display:flex;justify-content:space-between;font:11px var(--mono);color:var(--muted)}
+.scale{position:relative;height:16px;font:11px var(--mono);color:var(--muted)}
 .steps{margin:14px 0 6px;padding:0;list-style:none;font-size:14px}.steps li{padding:6px 0;border-top:1px solid var(--line)}
 code,.mono{font-family:var(--mono);font-size:13px}.muted{color:var(--muted)}
 .help{background:#b9b4d61a;border:1px dashed var(--hazy);border-radius:10px;padding:8px 10px;font-size:14px;margin-top:8px}
@@ -63,7 +63,7 @@ a{color:var(--accent)}
 <button class="why" onclick="document.getElementById('rev').classList.toggle('open')">why? (probability · contract · receipt)</button>
 <div class="reveal" id="rev">
 <div class="bar"><div class="tie" style="left:30%"></div><div class="tie" style="left:75%"></div><div class="mark" id="mark"></div></div>
-<div class="scale"><span>0</span><span>0.35</span><span>0.80</span><span>1</span></div>
+<div class="scale"><span style="position:absolute;left:0">0</span><span style="position:absolute;left:35%;transform:translateX(-50%)">0.35</span><span style="position:absolute;left:80%;transform:translateX(-50%)">0.80</span><span style="position:absolute;right:0">1</span></div>
 <p id="readout" style="margin:10px 0 0"></p>
 <ol class="steps">
 <li>1 · <b>Routed</b> to <code id="ctr"></code> <span class="muted">routing confidence <span class="mono" id="rc"></span></span></li>
