@@ -1,6 +1,7 @@
 // Ma8ic 8all: a Jev MCP service in a gag costume. Streamable HTTP, JSON responses, no deps.
 import MAGIC8 from "../contracts/CONTRACT-magic8@1.md";
 import DOCS from "../docs/GUIDE.md";
+import { accessVerifier } from "./auth.js";
 
 const MODEL = "typesafe/jev";
 const TYPES = new Set(["noul", "score", "choice"]);
@@ -140,17 +141,32 @@ async function rpc(env, msg) {
   return { jsonrpc: "2.0", id, error: { code: -32601, message: "method not found" } };
 }
 
-function authed(req, env) {
-  const h = req.headers.get("authorization") || "";
-  return !!env.MA8IC_TOKEN && h === `Bearer ${env.MA8IC_TOKEN}`;
+// Plain JSON API over the same handlers as MCP tools/call.
+const TOOLS = { shake: (env, a) => shake(env, a), ask: (env, a) => ask(env, a), docs: (_env, a) => docs(a), telemetry: (env) => telemetry(env) };
+async function api(req, env, name) {
+  const t = TOOLS[name];
+  if (!t) return Response.json({ error: "unknown tool", tools: Object.keys(TOOLS) }, { status: 404 });
+  let a = {};
+  if (req.method === "POST") { try { a = (await req.json()) || {}; } catch { return Response.json({ error: "body must be JSON" }, { status: 400 }); } }
+  else if (req.method === "GET" && (name === "docs" || name === "telemetry")) a = Object.fromEntries(new URL(req.url).searchParams);
+  else return new Response("method not allowed", { status: 405 });
+  try {
+    const r = await t(env, a);
+    return Response.json(r, { status: r && r.refused ? 422 : 200 });
+  } catch (e) {
+    return Response.json({ error: String(e.message || e) }, { status: 500 });
+  }
 }
 
 export default {
   async fetch(req, env) {
     const u = new URL(req.url);
     if (u.pathname === "/health") return Response.json({ ok: true, server: "ma8ic-8all", contract: `magic8@${C_MAGIC8.version}` });
-    if (u.pathname !== "/mcp") return new Response("not found", { status: 404 });
-    if (!authed(req, env)) return new Response("unauthorized", { status: 401, headers: { "www-authenticate": "Bearer" } });
+    const v1 = /^\/v1\/([a-z]+)$/.exec(u.pathname);
+    if (u.pathname !== "/mcp" && !v1) return new Response("not found", { status: 404 });
+    const denied = await accessVerifier(env)(req);
+    if (denied) return denied;
+    if (v1) return api(req, env, v1[1]);
     if (req.method !== "POST") return new Response("method not allowed", { status: 405 });
     const body = await req.json();
     if (Array.isArray(body)) { const r = (await Promise.all(body.map((m) => rpc(env, m)))).filter(Boolean); return Response.json(r); }
