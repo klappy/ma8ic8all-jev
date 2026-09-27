@@ -9,3 +9,4 @@ assert.deepEqual(c.bands.map((b) => [b.band, b.min, b.max]), [["yes", 0.8, 1], [
 assert.equal(c.phrases.yes.length, 10); assert.equal(c.phrases.hazy.length, 5); assert.equal(c.phrases.no.length, 5);
 assert.ok(c.criteria.true && c.criteria.false);
 console.log("contract magic8@1 ok");
+await import("./docs.test.mjs"); // docs guidance runs with the contract test (CI workflow unchanged)

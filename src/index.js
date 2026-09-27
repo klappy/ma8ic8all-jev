@@ -62,14 +62,21 @@ async function tel(env, row) {
 }
 
 // ---- tools ----
+export const MIN_CONTEXT = 80;
+export const BLIND_NOTE = "blind prior — pass context: what is known, numbers, time left, who is acting. See docs topic=context.";
+export function contextFlag(context) {
+  return typeof context === "string" && context.trim().length >= MIN_CONTEXT ? null : { context: "none", note: BLIND_NOTE, docs: "docs?topic=context" };
+}
+
 async function shake(env, { question, context = "" }) {
   if (!question) throw new Error("shake needs a question");
+  const blind = contextFlag(context);
   const t = Date.now(); const receipt = rid();
   const state = `Question: ${question}\nContext: ${context || "(none given)"}`;
   const j = await jev(env, state, { ball: { type: "noul", instructions: question, criteria: C_MAGIC8.criteria } });
   const p = probOf(j.answers.ball);
   const ph = phraseOf(p ?? 0.5, C_MAGIC8, Math.floor((p ?? 0.5) * 1e6) + question.length);
-  const out = { ...ph, probability: p, contract: `magic8@${C_MAGIC8.version}`, latency_ms: Date.now() - t, jev_ms: j.ms, receipt, advice_not_gate: true };
+  const out = { ...ph, probability: p, contract: `magic8@${C_MAGIC8.version}`, latency_ms: Date.now() - t, jev_ms: j.ms, receipt, advice_not_gate: true, ...(blind || { context: "given" }) };
   await tel(env, { tool: "shake", ok: true, ms: out.latency_ms, receipt, contract: out.contract, n: 1, jev_ms: j.ms, usage: j.usage, band: ph.band });
   return out;
 }
@@ -89,6 +96,7 @@ async function ask(env, { state, questions, contract, phrase = false }) {
     if (cname === "magic8" && cver === String(C_MAGIC8.version)) chash = await sha256(MAGIC8);
     else chash = null; // repo-path contracts are named by the caller; hash is the caller's
   } else { cname = contract.name; cver = String(contract.version); chash = await sha256(contract.body); }
+  const blind = contextFlag(state);
   const t = Date.now(); const receipt = rid();
   const j = await jev(env, state, questions);
   const answers = {};
@@ -96,15 +104,22 @@ async function ask(env, { state, questions, contract, phrase = false }) {
     const a = j.answers[k] ?? null; const p = probOf(a);
     answers[k] = { type: questions[k].type, answer: a, probability: p, ...(phrase && p != null ? phraseOf(p, C_MAGIC8, k.length + Math.floor(p * 1e6)) : {}) };
   }
-  const out = { answers, contract: `${cname}@${cver}`, contract_sha256: chash, latency_ms: Date.now() - t, jev_ms: j.ms, usage: j.usage, receipt, advice_not_gate: true };
+  const out = { answers, contract: `${cname}@${cver}`, contract_sha256: chash, latency_ms: Date.now() - t, jev_ms: j.ms, usage: j.usage, receipt, advice_not_gate: true, ...(blind || {}) };
   await tel(env, { tool: "ask", ok: true, ms: out.latency_ms, receipt, contract: out.contract, n: Object.keys(questions).length, jev_ms: j.ms, usage: j.usage });
   return out;
 }
 
-function docs({ section } = {}) {
-  if (!section) return { guide: DOCS, contract_magic8_v1: MAGIC8 };
-  const re = new RegExp(`^## ${section.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[\\s\\S]*?(?=^## |$(?![\\s\\S]))`, "mi");
-  const m = re.exec(DOCS); return m ? { section: m[0] } : { sections: [...DOCS.matchAll(/^## (.*)$/gm)].map((x) => x[1]) };
+export const DOC_TOPICS = { context: "Always pass context", contract: "How to write a contract", bands: "The bands", batching: "Batching" };
+function docSection(name) {
+  const re = new RegExp(`^## ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[\\s\\S]*?(?=^## |$(?![\\s\\S]))`, "mi");
+  const m = re.exec(DOCS); return m ? m[0] : null;
+}
+function docs({ topic, section } = {}) {
+  const rule = "Always pass context (what is known, numbers, time left, who is acting). Without it the ball returns the model's blind prior and says so.";
+  const want = topic || section;
+  if (!want) return { rule, topics: Object.keys(DOC_TOPICS), guide: DOCS, contract_magic8_v1: MAGIC8 };
+  const found = docSection(DOC_TOPICS[want] || want);
+  return found ? { rule, topic: want, section: found } : { rule, topics: Object.keys(DOC_TOPICS), sections: [...DOCS.matchAll(/^## (.*)$/gm)].map((x) => x[1]) };
 }
 
 async function telemetry(env) {
@@ -114,9 +129,9 @@ async function telemetry(env) {
 }
 
 const TOOLS = [
-  { name: "shake", description: "Ask the ball a yes/no question. One Jev noul under contract magic8@1; returns the phrase AND the real probability, band, latency, receipt. Advice, not a gate.", inputSchema: { type: "object", properties: { question: { type: "string" }, context: { type: "string" } }, required: ["question"] } },
-  { name: "ask", description: "Any Jev usage: one state, a named map of typed questions (noul/score/choice, criteria as full sentences), batched in one call. Requires contract name@version or {name,version,body}; refused otherwise. Returns every answer with its distribution, contract@version, latency, receipt. phrase:true adds the ball phrase.", inputSchema: { type: "object", properties: { state: { type: "string" }, questions: { type: "object" }, contract: {}, phrase: { type: "boolean" } }, required: ["state", "questions", "contract"] } },
-  { name: "docs", description: "How to use Jev well: bands, writing a contract, batching, reading confidence as advice, worked examples. Optional section.", inputSchema: { type: "object", properties: { section: { type: "string" } } } },
+  { name: "shake", description: "ALWAYS pass `context`: what is known, the numbers, time left, who is acting. Without it (or under ~80 chars) the ball returns the model's blind prior and the response says context:none. Example: 'Will we merge 80 PRs by midnight?' blind → no 0.08; with rail context → hazy 0.64. Ask the ball a yes/no question. One Jev noul under contract magic8@1; returns the phrase AND the real probability, band, latency, receipt. Advice, not a gate.", inputSchema: { type: "object", properties: { question: { type: "string" }, context: { type: "string", description: "What is known: numbers, time left, who is acting. A short paragraph. Required in practice; absent = blind prior." } }, required: ["question"] } },
+  { name: "ask", description: "Any Jev usage: one state (put everything known in it — numbers, time left, who acts; thin state gets context:none),  a named map of typed questions (noul/score/choice, criteria as full sentences), batched in one call. Requires contract name@version or {name,version,body}; refused otherwise. Returns every answer with its distribution, contract@version, latency, receipt. phrase:true adds the ball phrase.", inputSchema: { type: "object", properties: { state: { type: "string" }, questions: { type: "object" }, contract: {}, phrase: { type: "boolean" } }, required: ["state", "questions", "contract"] } },
+  { name: "docs", description: "Read first. Leads with the rule: always pass context (worked pair: blind no 0.08 vs contextual hazy 0.64). Then contract fields, bands, batching. Optional topic=context|bands|batching|contract.", inputSchema: { type: "object", properties: { topic: { type: "string", enum: ["context", "bands", "batching", "contract"] }, section: { type: "string" } } } },
   { name: "telemetry", description: "Aggregate usage in the shared telemetry shape (jev_* block). No content is ever stored.", inputSchema: { type: "object", properties: {} } },
 ];
 
