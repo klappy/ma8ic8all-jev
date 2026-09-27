@@ -12,5 +12,5 @@ binding = "AI"
 # Auth: Cloudflare Access in front; the Worker verifies the Access JWT (src/auth.js). No secrets.
 [vars]
 ACCESS_TEAM_DOMAIN = "klappy.cloudflareaccess.com"
-ACCESS_AUD = "" # filled with the Access app AUD at wiring time; empty = every /mcp and /v1 call is 403
+ACCESS_AUD = "b112562d506f29a994d4129c71db9ebf8090338249cd921a2350be23befe878b" # Access app ee0e94cf ma8ic-8all — staging
 # Optional D1 for telemetry: add [[d1_databases]] binding = "DB" after `schema.sql` is applied.
