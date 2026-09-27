@@ -142,10 +142,10 @@ async function rpc(env, msg) {
 }
 
 // Plain JSON API over the same handlers as MCP tools/call.
-const TOOLS = { shake: (env, a) => shake(env, a), ask: (env, a) => ask(env, a), docs: (_env, a) => docs(a), telemetry: (env) => telemetry(env) };
+const TOOL_HANDLERS = { shake: (env, a) => shake(env, a), ask: (env, a) => ask(env, a), docs: (_env, a) => docs(a), telemetry: (env) => telemetry(env) };
 async function api(req, env, name) {
-  const t = TOOLS[name];
-  if (!t) return Response.json({ error: "unknown tool", tools: Object.keys(TOOLS) }, { status: 404 });
+  const t = TOOL_HANDLERS[name];
+  if (!t) return Response.json({ error: "unknown tool", tools: Object.keys(TOOL_HANDLERS) }, { status: 404 });
   let a = {};
   if (req.method === "POST") { try { a = (await req.json()) || {}; } catch { return Response.json({ error: "body must be JSON" }, { status: 400 }); } }
   else if (req.method === "GET" && (name === "docs" || name === "telemetry")) a = Object.fromEntries(new URL(req.url).searchParams);
